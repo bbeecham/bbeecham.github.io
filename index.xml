@@ -17,12 +17,13 @@
     </item>
     
     <item>
-      <title>About</title>
+      <title>About Me</title>
       <link>http://bbeecham.github.io/about/</link>
-      <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
+      <pubDate>Fri, 04 Mar 2016 00:00:00 +0000</pubDate>
       
       <guid>http://bbeecham.github.io/about/</guid>
-      <description>This is a &amp;ldquo;hello world&amp;rdquo; example website for the blogdown package. The theme was forked from @jrutheiser/hugo-lithium-theme and modified by Yihui Xie.</description>
+      <description>Hello everybody! I am Brett Beecham, a student at UNL studying Sports Media and Communications. Sports are my life, and I want to bring that to this website while providing analysis for any and all data that I find interesting.
+This will be my home for all my current and future projects with data analysis and visualization. I am very excited to start working on more in the future.</description>
     </item>
     
   </channel>
