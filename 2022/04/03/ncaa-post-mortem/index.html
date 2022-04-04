@@ -22,6 +22,11 @@
 
 
 
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
 <link rel="stylesheet" href="/css/fonts.css" media="all">
 <link rel="stylesheet" href="/css/main.css" media="all">
 
@@ -57,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">1 min read</span>
+    <span class="article-duration">7 min read</span>
     
 
     <h1 class="article-title">NCAA Post Mortem</h1>
@@ -71,7 +76,89 @@
 <script src="http://bbeecham.github.io/2022/04/03/ncaa-post-mortem/index_files/header-attrs/header-attrs.js"></script>
 
 
-<p>Test</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v ggplot2 3.3.5     v purrr   0.3.4
+## v tibble  3.1.6     v dplyr   1.0.7
+## v tidyr   1.1.4     v stringr 1.4.0
+## v readr   2.1.1     v forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(tidymodels)</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;tune&#39;:
+##   method                   from   
+##   required_pkgs.model_spec parsnip</code></pre>
+<pre><code>## -- Attaching packages -------------------------------------- tidymodels 0.1.4 --</code></pre>
+<pre><code>## v broom        0.7.11     v rsample      0.1.1 
+## v dials        0.0.10     v tune         0.1.6 
+## v infer        1.0.0      v workflows    0.2.4 
+## v modeldata    0.1.1      v workflowsets 0.1.0 
+## v parsnip      0.1.7      v yardstick    0.0.9 
+## v recipes      0.1.17</code></pre>
+<pre><code>## -- Conflicts ----------------------------------------- tidymodels_conflicts() --
+## x scales::discard() masks purrr::discard()
+## x dplyr::filter()   masks stats::filter()
+## x recipes::fixed()  masks stringr::fixed()
+## x dplyr::lag()      masks stats::lag()
+## x yardstick::spec() masks readr::spec()
+## x recipes::step()   masks stats::step()
+## * Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
+<pre class="r"><code>library(zoo)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(hoopR)
+library(janitor)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;janitor&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     chisq.test, fisher.test</code></pre>
+<pre class="r"><code>library(gt)
+
+set.seed(1234)</code></pre>
+<p>Well, that was something. Going into the NCAA tournament, I tinkered with for days and days about my NCAA tournament model. I really wanted to win this bracket challenge. I messed with different ratings from espn box score data and kenpom.</p>
+<p>I watch a lot of college basketball, and thought that I had a good set of predictors. As I sit here on April 3, I feel lucky I even got 2 final four teams. This tournament was very unpredictable with lots of upsets happening in the first round, and an 8 seed in the national title game. In this review, I am gonna go over some of the reasons why I think my model went wrong and how I can improve it for next year when I undoubtedly use this to try and win some money even though that wont happen.</p>
+<p>Before I continue, since I used rolling data, I believe my model is updating still and changes results of certain games when I run it again, so it may not reflect what I submitted for my bracket for when I ran it.</p>
+<p>Here are the factors that I used:</p>
+<p>game_id, game_date,team_short_display_name,opponent_short_display_name, season, team_rolling_free_throw_factor,team_rolling_orb, team_rolling_blocks, opponent_rolling_blocks, team_cumulative_mean_true_shooting, opponent_cumulative_mean_true_shooting, opponent_sos_adj_o,opponent_sos_adj_d, team_rolling_drb, team_def_adj_o, team_def_adj_d, team_rolling_assist_turnover, opponent_rolling_assist_turnover, opponent_rolling_free_throw_factor, opponent_rolling_orb, opponent_rolling_drb, team_rolling_ppp, opponent_rolling_ppp, team_adj_em, opponent_adj_em, team_adj_o,opponent_adj_o, team_adj_d,opponent_adj_d, team_adj_t,opponent_adj_t, TeamResult.</p>
+<p>There were a few factors that I wrestled with using. One that was controversial for me was a luck factor by KenPom. Providence, a 4 seed, was considered a really lucky team. With my luck factor implemented, it usually had Providence rolling into the final four and even the national championship. In my final model run, it had providence losing in the first round to 13 seed South Dakota State, which did not happen and Providence made the Sweet 16.</p>
+<p>Another factor that really could not be accounted for in my model was how hot teams were going into the tournament. Teams like North Carolina were hot going into the tournament and have rode that all the way to the National Champ. My model had them losing to Baylor, who had really good stats and had them winning, but they were beat up and lost. My model had no way of counting for injuries.Kentucky was playing alright going into the tourney, but no model will predict St Peters to beat them and make the Elite 8.</p>
+<p>Lets take a look at how I did.
+My Final Four was Duke, UCLA, Arizona, and Kansas. 2/4 with Duke and Kansas. What about the other two Final Four teams? What went wrong with my model?</p>
+<p>SOUTH
+My East Region saw me getting every first round pick right. However, it fell apart pretty quickly. I had Arizona making it out of the region and beating Tennessee, but they lost to Houston.</p>
+<p>I had Villanova, who won the region,losing to Tennessee. Tennessee could not even make it past the second round. My model really liked Tennessee every run I made, but something went wrong there. Did their luck run out?</p>
+<p>Villanova beat Michigan and Houston and made the Final Four. My model did not like Arizona early on, but the more adjustments I made it had them going farther. Houston beat them handedly. Their season numbers dont blow you away, but I almost want to add a “star player and amazing coach” factor, because I think thats how they made it. I also think luck would have helped me more too.</p>
+<p>EAST
+This region was a mess. Utter mess. I had UCLA making it out of the region and into the Final Four. While they made the Sweet 16, they lost to eventual Final Four North Carolina. I got 5/8 first round picks right.</p>
+<p>Saint Peters, the greatest cinderella ever, made the elite eight as a 15 seed. Not much you can do about that. I had Kentucky, the team they beat in the first round, in the elite eight as well.</p>
+<p>About half of the runs I did it had North Carolina beating Baylor. Unfortunately for the last run I had it did not. I loved Carolina going into the tournament but the model did not. I mentioned this earlier how Baylor having injuries hurt them.</p>
+<p>It completely missed on San Francisco and Indiana. I think my model inflates kenpom stats and tempo a bit too much, where it had these teams very high in. A better balance might help my results too.I think it also skewed towards defense a bit, which is why it had Baylor beating UNC, Indiana winning, San Fran winning, and even Texas beating Purdue in the second round. A better balance between offensive and defensive metrics might help me more.</p>
+<p>The other two regions saw me predicting both final four teams correctly. The funny thing is when I did this run I was way more confident in Arizona and UCLA making the final four than Kansas and Duke. Funny how that works.</p>
+<p>where did the final four teams rank?</p>
+<pre class="r"><code>pomeroy_ratings &lt;- kp_pomeroy_ratings(min_year = 2022, max_year = 2022)</code></pre>
+<pre class="r"><code>duke &lt;- pomeroy_ratings %&gt;% filter(team == &quot;Duke&quot;) %&gt;% select(rk, team,adj_o_rk, adj_d_rk, luck)
+duke</code></pre>
+<pre><code>##   rk team adj_o_rk adj_d_rk  luck
+## 1  8 Duke        1       49 -0.01</code></pre>
+<pre class="r"><code>northcarolina &lt;- pomeroy_ratings %&gt;% filter(team == &quot;North Carolina&quot;) %&gt;% select(rk, team,adj_o_rk, adj_d_rk, luck)
+northcarolina</code></pre>
+<pre><code>##   rk           team adj_o_rk adj_d_rk  luck
+## 1 16 North Carolina       18       39 0.086</code></pre>
+<pre class="r"><code>villanova &lt;- pomeroy_ratings %&gt;% filter(team == &quot;Villanova&quot;) %&gt;% select(rk, team,adj_o_rk, adj_d_rk, luck)
+villanova</code></pre>
+<pre><code>##   rk      team adj_o_rk adj_d_rk luck
+## 1 10 Villanova        9       23 0.06</code></pre>
+<pre class="r"><code>kansas &lt;- pomeroy_ratings %&gt;% filter(team == &quot;Kansas&quot;) %&gt;% select(rk, team,adj_o_rk, adj_d_rk, luck)
+kansas</code></pre>
+<pre><code>##   rk   team adj_o_rk adj_d_rk  luck
+## 1  3 Kansas        6       17 0.034</code></pre>
+<p>The lowest rated team in kenpom was North Carolina at 16. So, KenPom probably knows what he is talking about and his stuff will help. Something that is really interesting to me is the luck, which is why I included it. It may have helped Kansas make it even farther in my bracket. It also may have predicted Duke to lose earlier. So still not sure how I feel about it. adj_o and adj_d tell the story, however. All of these teams are elite on offense and defense, with Kansas probably being the most well rounded team. And they are still playing.</p>
+<p>This year left me with a lot of questions. But with how crazy this tournament was, I think I like where my model is at. I think over time, this model will do more good than bad, especially with more improvements. Until next year, I guess.</p>
 
     </div>
   </article>
@@ -94,6 +181,18 @@
 
     </div>
     
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
 
     
 
